@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MyCharacterController : MonoBehaviour {
     [SerializeField]
@@ -9,9 +10,30 @@ public class MyCharacterController : MonoBehaviour {
     [SerializeField]
     private CharacterController controller;
 
+    [SerializeField]
+    private float speed;
+
+    [SerializeField]
+    private float gravity;
+
+    [SerializeField]
+    private float jumpHeight = 3f;
+
+    [SerializeField]
+    private Transform groundCheck;
+    [SerializeField]
+    private float groundDistance = 0.4f;
+    [SerializeField]
+    private LayerMask groundMask;
+
+    private Vector3 velocity;
+    private bool isGrounded;
+
 
     private void Awake() {
         _gameplayInputProvider = PlayerController.Instance.GetInput<GameplayInputProvider>(_IdProvider.Id);
+
+        controller = GetComponent<CharacterController>();
     }
 
     private void OnEnable() {
@@ -35,6 +57,39 @@ public class MyCharacterController : MonoBehaviour {
     }
 
     private void SprintCharacter() {
+        if (isGrounded) {
+            speed = 10;
+        }
         Debug.LogFormat("SPRINT");
+    }
+
+    private void Update() {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        // Debug.LogFormat("IsGrounded: {0}", isGrounded);
+
+        if (isGrounded && velocity.y < 0) {
+            velocity.y = -2f;
+        }
+
+        //if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded) {
+        //    speed = 10;
+        //} else {
+        //    speed = 5;
+        //}
+
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        controller.Move(move * speed * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded) {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
     }
 }
