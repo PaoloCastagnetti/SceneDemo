@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameplayInputProvider : InputProvider
-{
+public class GameplayInputProvider : InputProvider {
     #region Delegate
-    public OnFloatDelegate OnMove;
+    public OnVector2Delegate OnMove;
     public OnVoidDelegate OnJump;
+    public OnVoidDelegate OnSprint;
     #endregion
 
     [Header("Gameplay")]
@@ -17,32 +15,38 @@ public class GameplayInputProvider : InputProvider
     [SerializeField]
     private InputActionReference _Jump;
 
-    private void OnEnable()
-    {
+    [SerializeField]
+    private InputActionReference _Sprint;
+
+    private void OnEnable() {
         _Move.action.Enable();
         _Jump.action.Enable();
+        _Sprint.action.Enable();
 
         _Move.action.performed += MovePerfomed;
         _Jump.action.performed += JumpPerfomed;
+        _Sprint.action.performed += SprintPerformed;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         _Move.action.Disable();
         _Jump.action.Disable();
+        _Sprint.action.Disable();
 
         _Move.action.performed -= MovePerfomed;
         _Jump.action.performed -= JumpPerfomed;
+        _Sprint.action.performed -= SprintPerformed;
     }
 
-    private void MovePerfomed(InputAction.CallbackContext obj)
-    {
-        float value = obj.action.ReadValue<float>();
+    private void MovePerfomed(InputAction.CallbackContext obj) {
+        Vector2 value = obj.action.ReadValue<Vector2>();
         OnMove?.Invoke(value);
     }
 
-    private void JumpPerfomed(InputAction.CallbackContext obj)
-    {
+    private void JumpPerfomed(InputAction.CallbackContext obj) {
         OnJump?.Invoke();
+    }
+    private void SprintPerformed(InputAction.CallbackContext obj) {
+        OnSprint?.Invoke();
     }
 }
