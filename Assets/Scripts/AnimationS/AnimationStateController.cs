@@ -24,11 +24,13 @@ public class AnimationStateController : MonoBehaviour {
 
     private void OnEnable() {
         _gameplayInputProvider.OnMove += MoveAnimation;
+        _gameplayInputProvider.OnMoveCanceled += CancelAnimation;
         _gameplayInputProvider.OnJump += JumpAnimation;
         _gameplayInputProvider.OnSprint += SprintAnimation;
     }
     private void OnDisable() {
         _gameplayInputProvider.OnMove -= MoveAnimation;
+        _gameplayInputProvider.OnMoveCanceled -= CancelAnimation;
         _gameplayInputProvider.OnJump -= JumpAnimation;
         _gameplayInputProvider.OnSprint -= SprintAnimation;
     }
@@ -46,18 +48,12 @@ public class AnimationStateController : MonoBehaviour {
         if (!_isWalking) {
             animator.SetBool(_isWalkingHash, true);
         }
-        if (_isWalking) {
-            animator.SetBool(_isWalkingHash, false);
-        }
     }
 
     private void JumpAnimation() {
         _isJumping = animator.GetBool(_isJumpingHash);
         if (!_isJumping) {
             animator.SetBool(_isJumpingHash, true);
-        }
-        if (_isJumping) {
-            animator.SetBool(_isJumpingHash, false);
         }
     }
 
@@ -66,9 +62,18 @@ public class AnimationStateController : MonoBehaviour {
         if (!_isRunning) {
             animator.SetBool(_isRunningHash, true);
         }
-        if (_isRunning) {
+    }
+
+    private void CancelAnimation() {
+        _isWalking = animator.GetBool(_isWalkingHash);
+        _isRunning = animator.GetBool(_isRunningHash);
+        _isJumping = animator.GetBool(_isJumpingHash);
+        if (_isRunning)
             animator.SetBool(_isRunningHash, false);
-        }
+        if (_isJumping)
+            animator.SetBool(_isJumpingHash, false);
+        if (_isWalking)
+            animator.SetBool(_isWalkingHash, false);
     }
 
 }

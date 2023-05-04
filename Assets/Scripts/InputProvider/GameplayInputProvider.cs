@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class GameplayInputProvider : InputProvider {
     #region Delegate
     public OnVector2Delegate OnMove;
+    public OnVoidDelegate OnMoveCanceled;
     public OnVoidDelegate OnJump;
     public OnVoidDelegate OnSprint;
     #endregion
@@ -24,6 +25,7 @@ public class GameplayInputProvider : InputProvider {
         _Sprint.action.Enable();
 
         _Move.action.performed += MovePerfomed;
+        _Move.action.canceled += MoveCanceled;
         _Jump.action.performed += JumpPerfomed;
         _Sprint.action.performed += SprintPerformed;
     }
@@ -34,6 +36,7 @@ public class GameplayInputProvider : InputProvider {
         _Sprint.action.Disable();
 
         _Move.action.performed -= MovePerfomed;
+        _Move.action.canceled -= MoveCanceled;
         _Jump.action.performed -= JumpPerfomed;
         _Sprint.action.performed -= SprintPerformed;
     }
@@ -41,6 +44,10 @@ public class GameplayInputProvider : InputProvider {
     private void MovePerfomed(InputAction.CallbackContext obj) {
         Vector2 value = obj.action.ReadValue<Vector2>();
         OnMove?.Invoke(value);
+    }
+
+    private void MoveCanceled(InputAction.CallbackContext obj) {
+        OnMoveCanceled?.Invoke();
     }
 
     private void JumpPerfomed(InputAction.CallbackContext obj) {

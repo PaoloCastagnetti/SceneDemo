@@ -38,6 +38,7 @@ public class MyCharacterController : MonoBehaviour {
 
     private void OnEnable() {
         _gameplayInputProvider.OnMove += MoveCharacter;
+        _gameplayInputProvider.OnMoveCanceled += StopCharacter;
         _gameplayInputProvider.OnJump += JumpCharacter;
         _gameplayInputProvider.OnSprint += SprintCharacter;
     }
@@ -54,6 +55,9 @@ public class MyCharacterController : MonoBehaviour {
     private void MoveCharacter(Vector2 vector2) {
         Debug.LogFormat("vector2.x: {0} || vector2.y: {1}",vector2.x,vector2.y);
         Debug.LogFormat("MOVE");
+    }
+    private void StopCharacter() {
+        Debug.LogFormat("STOP");
     }
 
     private void SprintCharacter() {
@@ -85,7 +89,7 @@ public class MyCharacterController : MonoBehaviour {
         controller.Move(move * speed * Time.deltaTime);
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded) {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            velocity.y = Mathf.Sqrt(jumpHeight * -1f * gravity);
         }
 
         velocity.y += gravity * Time.deltaTime;
