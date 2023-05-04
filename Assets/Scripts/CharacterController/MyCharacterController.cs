@@ -41,11 +41,13 @@ public class MyCharacterController : MonoBehaviour {
         _gameplayInputProvider.OnMoveCanceled += StopCharacter;
         _gameplayInputProvider.OnJump += JumpCharacter;
         _gameplayInputProvider.OnSprint += SprintCharacter;
+        _gameplayInputProvider.OnSprintCanceled += SlowCharacter;
     }
     private void OnDisable() {
         _gameplayInputProvider.OnMove -= MoveCharacter;
         _gameplayInputProvider.OnJump -= JumpCharacter;
         _gameplayInputProvider.OnSprint -= SprintCharacter;
+        _gameplayInputProvider.OnSprintCanceled -= SlowCharacter;
     }
 
     private void JumpCharacter() {
@@ -57,14 +59,18 @@ public class MyCharacterController : MonoBehaviour {
         Debug.LogFormat("MOVE");
     }
     private void StopCharacter() {
+        velocity = Vector3.zero;
         Debug.LogFormat("STOP");
     }
 
     private void SprintCharacter() {
-        if (isGrounded) {
-            speed = 10;
-        }
+        speed = 10;
         Debug.LogFormat("SPRINT");
+    }
+
+    private void SlowCharacter() { 
+        speed = 5;
+        Debug.LogFormat("SLOW DOWN");
     }
 
     private void Update() {

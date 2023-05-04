@@ -26,13 +26,17 @@ public class AnimationStateController : MonoBehaviour {
         _gameplayInputProvider.OnMove += MoveAnimation;
         _gameplayInputProvider.OnMoveCanceled += CancelAnimation;
         _gameplayInputProvider.OnJump += JumpAnimation;
+        _gameplayInputProvider.OnJumpCanceled += CancelAnimation;
         _gameplayInputProvider.OnSprint += SprintAnimation;
+        _gameplayInputProvider.OnSprintCanceled += CancelAnimation;
     }
     private void OnDisable() {
         _gameplayInputProvider.OnMove -= MoveAnimation;
         _gameplayInputProvider.OnMoveCanceled -= CancelAnimation;
         _gameplayInputProvider.OnJump -= JumpAnimation;
+        _gameplayInputProvider.OnJumpCanceled -= CancelAnimation;
         _gameplayInputProvider.OnSprint -= SprintAnimation;
+        _gameplayInputProvider.OnSprintCanceled -= CancelAnimation;
     }
 
     // Start is called before the first frame update

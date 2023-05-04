@@ -6,7 +6,9 @@ public class GameplayInputProvider : InputProvider {
     public OnVector2Delegate OnMove;
     public OnVoidDelegate OnMoveCanceled;
     public OnVoidDelegate OnJump;
+    public OnVoidDelegate OnJumpCanceled;
     public OnVoidDelegate OnSprint;
+    public OnVoidDelegate OnSprintCanceled;
     #endregion
 
     [Header("Gameplay")]
@@ -27,7 +29,9 @@ public class GameplayInputProvider : InputProvider {
         _Move.action.performed += MovePerfomed;
         _Move.action.canceled += MoveCanceled;
         _Jump.action.performed += JumpPerfomed;
+        _Jump.action.canceled += JumpCanceled;
         _Sprint.action.performed += SprintPerformed;
+        _Sprint.action.canceled += SprintCanceled;
     }
 
     private void OnDisable() {
@@ -39,6 +43,7 @@ public class GameplayInputProvider : InputProvider {
         _Move.action.canceled -= MoveCanceled;
         _Jump.action.performed -= JumpPerfomed;
         _Sprint.action.performed -= SprintPerformed;
+        _Sprint.action.canceled += SprintCanceled;
     }
 
     private void MovePerfomed(InputAction.CallbackContext obj) {
@@ -53,7 +58,14 @@ public class GameplayInputProvider : InputProvider {
     private void JumpPerfomed(InputAction.CallbackContext obj) {
         OnJump?.Invoke();
     }
+
+    private void JumpCanceled(InputAction.CallbackContext obj) {
+        OnJumpCanceled?.Invoke();
+    }
     private void SprintPerformed(InputAction.CallbackContext obj) {
         OnSprint?.Invoke();
+    }
+    private void SprintCanceled(InputAction.CallbackContext obj) {
+        OnSprintCanceled?.Invoke();
     }
 }
